@@ -1,6 +1,8 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { Card, CardContent, CardMedia, Grid, Typography } from '@mui/material';
+import { Box } from '@mui/system';
+import TypeTag from '../../components/TypeTag';
 
 const GET_POKEMONS = gql`
   query samplePokeAPIquery {
@@ -42,7 +44,7 @@ const Home = () => {
 
   return <>
     <Grid container spacing={1}>
-      {data.pokemon_v2_pokemon.map(({ name, pokemon_v2_pokemonsprites_aggregate: sprites }: any) =>
+      {data.pokemon_v2_pokemon.map(({ order, name, pokemon_v2_pokemonsprites_aggregate: sprites, pokemon_v2_pokemontypes: types }: any) =>
       <Grid item xs={6} md={3}>
         <Card sx={{ padding: '5px' }}>
           <CardMedia
@@ -53,9 +55,15 @@ const Home = () => {
             sx={{ objectFit: 'fill' }}
           />
           <CardContent>
-            <Typography gutterBottom variant="h6" component="div">
-              {name}
+            <Typography>
+              N° {(order + '').padStart(3, '0')}
             </Typography>
+            <Typography gutterBottom variant="h6" component="div">
+              {name?.charAt(0).toUpperCase() + name?.slice(1)}
+            </Typography>
+            <Box sx={{ display: 'flex' }}>
+              { types.map(({ pokemon_v2_type: type }: any) => <TypeTag type={type.name} />) }
+            </Box>
           </CardContent>
         </Card>
       </Grid>)}

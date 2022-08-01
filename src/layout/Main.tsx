@@ -5,9 +5,9 @@ interface MainProps {
 }
 
 const Main = ({children}: MainProps) => <>
-  <Grid container spacing={2}>
+  <Grid container spacing={1}>
     <Grid item xs md/>
-    <Grid item xs={8} sx={{ background: 'gray' }}>
+    <Grid item xs={8} md={8} sx={{ p: '8px !important', background: 'gray' }}>
       {children}
     </Grid>
     <Grid item xs md/>

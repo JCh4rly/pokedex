@@ -8,9 +8,17 @@ interface SearchBoxProps {
 
 const SearchBox = ({ search, onSearch }: SearchBoxProps) => {
   const [value, setValue] = React.useState(search);
+  const onClear = () => {
+    setValue("");
+    onSearch("");
+  }
   const onKeyDown = (e: any) => {
     if (e.code === "Enter") {
       onSearch(value);
+    }
+
+    if (e.code === "Escape") {
+      onClear();
     }
   }
   const onChange = (value: string) => {
@@ -28,10 +36,16 @@ const SearchBox = ({ search, onSearch }: SearchBoxProps) => {
         onKeyDown={onKeyDown} 
         onChange={(e) => onChange(e.target.value)}
         sx={{ flexGrow: 1 }} />
+      <Button
+        variant="contained"
+        onClick={onClear}
+        sx={{ marginLeft: 1 }}
+      >
+        Clear
+      </Button>  
       <Button 
         variant="contained"
         onClick={() => onSearch(value)}
-        disabled={!value || value.length <= 3}
         sx={{ marginLeft: 1 }}
       >
         Search

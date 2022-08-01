@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
-import { Button, Card, CardContent, CardMedia, Grid, Typography } from '@mui/material';
+import { Alert, Button, Card, CardContent, CardMedia, CircularProgress, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import TypeTag from '../../components/TypeTag';
 import SearchBox from '../../components/SearchBox';
@@ -62,20 +62,29 @@ const Home = () => {
     if (value === search) {
       return
     }
-    
+
     setSearch(value);
     setPage(0);
     setPokemons([]);
-    refetch({ offset: 0, search });
+    refetch({ offset: 0, search: value });
   };
-
+  
   return <>
     <Grid container spacing={1}>
       <Grid item xs={12} md={12} sx={{ textAlign: 'center' }}>
         <SearchBox search={search} onSearch={handleSearch} />
       </Grid>
-
-      {pokemons.map(({ order, name, pokemon_v2_pokemonsprites_aggregate: sprites, pokemon_v2_pokemontypes: types }: any) =>
+      {!loading && (!pokemons || pokemons.length === 0) && <>
+        <Grid item xs={12} md={12}>
+          <Alert severity="info">No Pokemons found!!</Alert>
+        </Grid>
+      </>}
+      {loading && <>
+        <Grid item xs={12} md={12} sx={{ textAlign: 'center' }}>
+          <CircularProgress /> 
+        </Grid>
+      </>}
+      {!loading && pokemons.length > 0 && pokemons.map(({ order, name, pokemon_v2_pokemonsprites_aggregate: sprites, pokemon_v2_pokemontypes: types }: any) =>
       <Grid item xs={6} md={3} key={name}>
         <Card sx={{ padding: '5px' }}>
           <CardMedia
@@ -99,13 +108,12 @@ const Home = () => {
         </Card>
       </Grid>)}
       <Grid item xs={12} md={12} sx={{ textAlign: 'center' }}>
-        <Button 
+        {!loading && pokemons.length > 0 && <Button 
           variant="contained" 
           onClick={loadMoreItems}
-          disabled={loading}
         >
           Load more Pokemons
-        </Button>
+        </Button>}
       </Grid>
     </Grid>
   </>;

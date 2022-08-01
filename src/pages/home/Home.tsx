@@ -43,7 +43,9 @@ const Home = () => {
 
   React.useEffect(() => {
     if (data) {
-      setPokemons([...pokemons, ...data.pokemon_v2_pokemon]);
+      setPokemons(page === 0 
+        ? data.pokemon_v2_pokemon 
+        : [...pokemons, ...data.pokemon_v2_pokemon]);
     }
   }, [data])
 
@@ -65,7 +67,6 @@ const Home = () => {
 
     setSearch(value);
     setPage(0);
-    setPokemons([]);
     refetch({ offset: 0, search: value });
   };
   
@@ -74,7 +75,7 @@ const Home = () => {
       <Grid item xs={12} md={12} sx={{ textAlign: 'center' }}>
         <SearchBox search={search} onSearch={handleSearch} />
       </Grid>
-      {!loading && (!pokemons || pokemons.length === 0) && <>
+      {!loading && pokemons.length === 0 && <>
         <Grid item xs={12} md={12}>
           <Alert severity="info">No Pokemons found!!</Alert>
         </Grid>

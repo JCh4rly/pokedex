@@ -3,11 +3,15 @@ import { createSlice } from '@reduxjs/toolkit'
 export const homeSlice = createSlice({
   name: 'home',
   initialState: {
+    sorting: 'order_asc',
     page: 0,
     search: "",
     pokemons: [],
   },
   reducers: {
+    setSorting: (state, action) => {
+      state.sorting = action.payload
+    },
     setPage: (state, action) => {
       state.page = action.payload
     },
@@ -21,6 +25,6 @@ export const homeSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setPage, setSearch, setPokemons } = homeSlice.actions
+export const { setSorting, setPage, setSearch, setPokemons } = homeSlice.actions
 
 export default homeSlice.reducer

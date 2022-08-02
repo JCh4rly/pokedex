@@ -1,8 +1,10 @@
 import React from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { gql, useLazyQuery } from '@apollo/client';
 import { Alert, Button, CircularProgress, Grid } from '@mui/material';
 import SearchBox from '../../components/SearchBox';
 import PokemonCard from '../../components/PokemonCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPokemons, setSearch } from './homeSlice';
 
 const GET_POKEMONS = gql`
   query samplePokeAPIquery($offset: Int!, $search: String) {
@@ -44,24 +46,31 @@ const GET_POKEMONS = gql`
 
 const Home = () => {
   const rowsPerpage = 12;
-  const [search, setSearch] = React.useState("");
-  const { loading, error, data, refetch } = useQuery(GET_POKEMONS, {
-    variables: { offset: 0, search }
+  const pokemons = useSelector((state: any) => state.home.pokemons);
+  const search = useSelector((state: any) => state.home.search);
+  const dispatch = useDispatch();
+  const [getPokemons, { loading, error, data }] = useLazyQuery(GET_POKEMONS, {
+    notifyOnNetworkStatusChange: true,
   });
-  const [pokemons, setPokemons] = React.useState<any[]>([]);
   const [page, setPage] = React.useState(0);  
 
   React.useEffect(() => {
+    if (pokemons.length === 0) {
+      getPokemons({ variables: { offset: 0, search: "" } });
+    }
+  }, [])
+
+  React.useEffect(() => {
     if (data) {
-      setPokemons(page === 0 
+      dispatch(setPokemons(page === 0 
         ? data.pokemon_v2_pokemon 
-        : [...pokemons, ...data.pokemon_v2_pokemon]);
+        : [...pokemons, ...data.pokemon_v2_pokemon]));
     }
   }, [data])
 
   React.useEffect(() => {
     if (page > 0) {
-      refetch({ offset: rowsPerpage * page, search });
+      getPokemons({ variables: { offset: rowsPerpage * page, search } });
     }
   }, [page]);
 
@@ -71,13 +80,9 @@ const Home = () => {
 
   const loadMoreItems = () => setPage((page) => (page + 1));
   const handleSearch = (value: string) => {
-    if (value === search) {
-      return
-    }
-
-    setSearch(value);
+    dispatch(setSearch(value));
     setPage(0);
-    refetch({ offset: 0, search: value });
+    getPokemons({ variables: { offset: 0, search: value } });
   };
   
   return <>
@@ -85,20 +90,20 @@ const Home = () => {
       <Grid item xs={12} md={12} sx={{ textAlign: 'center' }}>
         <SearchBox search={search} onSearch={handleSearch} />
       </Grid>
-      {!loading && pokemons.length === 0 && <>
+      {!loading && data?.pokemon_v2_pokemon?.length === 0 && pokemons.length === 0 && <>
         <Grid item xs={12} md={12}>
           <Alert severity="info">No Pokemons found!!</Alert>
         </Grid>
       </>}
+      {pokemons.map((item: any) =>
+      <Grid item xs={6} md={3} key={item.name}>
+        <PokemonCard item={item} />
+      </Grid>)}
       {loading && <>
         <Grid item xs={12} md={12} sx={{ textAlign: 'center' }}>
           <CircularProgress /> 
         </Grid>
       </>}
-      {!loading && pokemons.length > 0 && pokemons.map((item) =>
-      <Grid item xs={6} md={3} key={item.name}>
-        <PokemonCard item={item} />
-      </Grid>)}
       <Grid item xs={12} md={12} sx={{ textAlign: 'center' }}>
         {!loading && pokemons.length > 0 && <Button 
           variant="contained" 

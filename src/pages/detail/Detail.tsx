@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardMedia, Grid, Typography } from "@mui/material";
+import { Alert, Box, Button, Card, CardMedia, Grid, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Evolutions from "../../components/Evolutions";
@@ -8,6 +8,23 @@ import { getSprite } from "../../util/Util";
 const Detail = () => {
   const navigate = useNavigate();
   const currentItem = useSelector((state: any) => state.detail.currentItem);
+
+  if (!currentItem) {
+    return <>
+      <Box sx={{ display: 'flex' }}>
+        <Alert severity="error" sx={{ flexGrow: 1, marginRight: 1 }}>
+          No Pokemon selected!! Please go back and pick your favorite one
+        </Alert>
+        <Button
+          variant="contained"
+          onClick={() => navigate(-1)}
+        >
+          Back to Pokedex
+        </Button>
+      </Box>
+    </>
+  }
+
   const { order, height, weight, name, pokemon_v2_pokemonsprites_aggregate: sprites, 
     pokemon_v2_pokemontypes: types, pokemon_v2_pokemonabilities: abilities,
     pokemon_v2_pokemonspecy: specy} = currentItem;

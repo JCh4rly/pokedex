@@ -4,7 +4,7 @@ import { Alert, Button, CircularProgress, Grid } from '@mui/material';
 import SearchBox from '../../components/SearchBox';
 import PokemonCard from '../../components/PokemonCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPage, setPokemons, setSearch, setSorting } from './homeSlice';
+import { setPage, setPokemons, setSortingOption, setVariables } from './homeSlice';
 import SortBox from '../../components/SortBox';
 
 const GET_POKEMONS = gql`
@@ -47,10 +47,11 @@ const GET_POKEMONS = gql`
 
 const Home = () => {
   const rowsPerpage = 12;
-  const page = useSelector((state: any) => state.home.page);
-  const sorting = useSelector((state: any) => state.home.sorting);
   const pokemons = useSelector((state: any) => state.home.pokemons);
-  const search = useSelector((state: any) => state.home.search);
+  const variables = useSelector((state: any) => state.home.variables);
+  const sortingOption = useSelector((state: any) => state.home.sortingOption);
+  const page = useSelector((state: any) => state.home.page);
+  const { search } = variables;
   const dispatch = useDispatch();
   const [getPokemons, { loading, error, data }] = useLazyQuery(GET_POKEMONS, {
     notifyOnNetworkStatusChange: true,
@@ -61,13 +62,7 @@ const Home = () => {
     name_asc: { name: 'asc' },
     name_desc: { name: 'desc' },
   };
-  const sortingValue = sortingConfig[sorting] || sortingConfig['order_asc'];
-
-  React.useEffect(() => {
-    if (pokemons.length === 0 && page === 0) {
-      getPokemons({ variables: { offset: 0, search: "", sorting: sortingValue } });
-    }
-  }, [])
+  const init = React.useRef(true);
 
   React.useEffect(() => {
     if (data) {
@@ -77,24 +72,37 @@ const Home = () => {
     }
   }, [data])
 
-  if (error) {
-    return <p>Error: {error.message}</p>
-  }
+  React.useEffect(() => {
+    // Use init to detect first render.
+    if ((init.current && pokemons.length === 0) || !init.current) {
+      getPokemons({ variables });
+    }
+
+    // Set init to false after first use.
+    return (() => {
+      if (init.current) {
+        init.current = false;
+      }
+    })
+  }, [variables]);
 
   const loadMoreItems = () => {
     dispatch(setPage(page + 1));
-    getPokemons({ variables: { offset: rowsPerpage * (page + 1), search, sorting: sortingValue } });
+    dispatch(setVariables({ offset: rowsPerpage * (page + 1) }));
   };
   const handleSearch = (value: string) => {
-    dispatch(setSearch(value));
     dispatch(setPage(0));
-    getPokemons({ variables: { offset: 0, search: value, sorting: sortingValue } });
+    dispatch(setVariables({ offset: 0, search: value }));
   };
   const handleSort = (value: string) => {
     const sortingValue = sortingConfig[value] || sortingConfig['order_asc'];
+    dispatch(setSortingOption(value));
+    dispatch(setPage(0));
+    dispatch(setVariables({ offset: 0, sorting: sortingValue }));
+  }
 
-    dispatch(setSorting(value));
-    getPokemons({ variables: { offset: rowsPerpage * page, search, sorting: sortingValue } });
+  if (error) {
+    return <p>Error: {error.message}</p>
   }
   
   return <>
@@ -103,7 +111,7 @@ const Home = () => {
         <SearchBox search={search} onSearch={handleSearch} />
       </Grid>
       <Grid item xs={12} md={12} sx={{ textAlign: 'center' }}>
-        <SortBox value={sorting} onChange={handleSort} />
+        <SortBox value={sortingOption} onChange={handleSort} />
       </Grid>
 
       {!loading && data?.pokemon_v2_pokemon?.length === 0 && pokemons.length === 0 && <>

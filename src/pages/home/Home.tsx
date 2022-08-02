@@ -26,6 +26,18 @@ const GET_POKEMONS = gql`
           sprites
         }
       }
+      pokemon_v2_pokemonspecy {
+        pokemon_v2_evolutionchain {
+          pokemon_v2_pokemonspecies {
+            name
+            pokemon_v2_pokemons {
+              pokemon_v2_pokemonsprites {
+                sprites
+              }
+            }
+          }
+        }
+      }
     }
   }
 `;

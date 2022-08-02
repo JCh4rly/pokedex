@@ -2,6 +2,7 @@ import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setCurrentItem } from "../pages/detail/detailSlice";
+import { getSprite } from "../util/Util";
 import TypeTag from "./TypeTag";
 
 interface PokemonCardProps {
@@ -12,7 +13,6 @@ const PokemonCard = ({ item }: PokemonCardProps) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { order, name, pokemon_v2_pokemonsprites_aggregate: sprites, pokemon_v2_pokemontypes: types } = item;
-  const getSprite = (sprites: any) => JSON.parse(sprites?.nodes[0]?.sprites)?.other?.home?.front_default;
   const onClick = () => {
     dispatch(setCurrentItem(item));
     navigate("/detail");
@@ -23,7 +23,7 @@ const PokemonCard = ({ item }: PokemonCardProps) => {
       <CardMedia
         component="img"
         height="140"
-        image={getSprite(sprites)}
+        image={getSprite(sprites?.nodes[0]?.sprites)}
         alt={name}
         sx={{ objectFit: 'fill', cursor: 'pointer' }}
         onClick={onClick}

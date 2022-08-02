@@ -17,17 +17,21 @@ const PokemonCard = ({ item }: PokemonCardProps) => {
     dispatch(setCurrentItem(item));
     navigate("/detail");
   }
+  const spriteUrl = getSprite(sprites?.nodes[0]?.sprites);
 
   return <>
     <Card sx={{ padding: '5px' }}>
-      <CardMedia
+      {!spriteUrl && <Typography variant="h6" sx={{ height: 140, textAlign: 'center' }}>
+        Not Available
+      </Typography>}
+      {spriteUrl && <CardMedia
         component="img"
         height="140"
-        image={getSprite(sprites?.nodes[0]?.sprites)}
+        image={spriteUrl}
         alt={name}
         sx={{ objectFit: 'fill', cursor: 'pointer' }}
         onClick={onClick}
-      />
+      />}
       <CardContent>
         <Typography>
           N° {(order + '').padStart(3, '0')}

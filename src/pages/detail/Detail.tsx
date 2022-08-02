@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Evolutions from "../../components/Evolutions";
 import TypeTag from "../../components/TypeTag";
-import { getSprite } from "../../util/Util";
+import { getHomeSprite } from "../../util/Util";
 
 const Detail = () => {
   const navigate = useNavigate();
@@ -28,6 +28,7 @@ const Detail = () => {
   const { order, height, weight, name, pokemon_v2_pokemonsprites_aggregate: sprites, 
     pokemon_v2_pokemontypes: types, pokemon_v2_pokemonabilities: abilities,
     pokemon_v2_pokemonspecy: specy} = currentItem;
+  const spriteUrl = getHomeSprite(sprites?.nodes[0]?.sprites);
 
   return <>
     <Grid container spacing={1}>
@@ -49,7 +50,7 @@ const Detail = () => {
           <CardMedia
             component="img"
             height="350"
-            image={getSprite(sprites?.nodes[0]?.sprites)}
+            image={spriteUrl}
             sx={{ objectFit: 'fill', p: 2 }}
             alt={name}
           />

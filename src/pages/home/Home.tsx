@@ -4,7 +4,7 @@ import { Alert, Button, CircularProgress, Grid } from '@mui/material';
 import SearchBox from '../../components/SearchBox';
 import PokemonCard from '../../components/PokemonCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPokemons, setSearch } from './homeSlice';
+import { setPage, setPokemons, setSearch } from './homeSlice';
 
 const GET_POKEMONS = gql`
   query samplePokeAPIquery($offset: Int!, $search: String) {
@@ -46,16 +46,16 @@ const GET_POKEMONS = gql`
 
 const Home = () => {
   const rowsPerpage = 12;
+  const page = useSelector((state: any) => state.home.page);
   const pokemons = useSelector((state: any) => state.home.pokemons);
   const search = useSelector((state: any) => state.home.search);
   const dispatch = useDispatch();
   const [getPokemons, { loading, error, data }] = useLazyQuery(GET_POKEMONS, {
     notifyOnNetworkStatusChange: true,
   });
-  const [page, setPage] = React.useState(0);  
 
   React.useEffect(() => {
-    if (pokemons.length === 0) {
+    if (pokemons.length === 0 && page === 0) {
       getPokemons({ variables: { offset: 0, search: "" } });
     }
   }, [])
@@ -68,20 +68,17 @@ const Home = () => {
     }
   }, [data])
 
-  React.useEffect(() => {
-    if (page > 0) {
-      getPokemons({ variables: { offset: rowsPerpage * page, search } });
-    }
-  }, [page]);
-
   if (error) {
     return <p>Error: {error.message}</p>
   }
 
-  const loadMoreItems = () => setPage((page) => (page + 1));
+  const loadMoreItems = () => {
+    dispatch(setPage(page + 1));
+    getPokemons({ variables: { offset: rowsPerpage * (page + 1), search } });
+  };
   const handleSearch = (value: string) => {
     dispatch(setSearch(value));
-    setPage(0);
+    dispatch(setPage(0));
     getPokemons({ variables: { offset: 0, search: value } });
   };
   

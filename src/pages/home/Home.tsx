@@ -1,9 +1,8 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
-import { Alert, Button, Card, CardContent, CardMedia, CircularProgress, Grid, Typography } from '@mui/material';
-import { Box } from '@mui/system';
-import TypeTag from '../../components/TypeTag';
+import { Alert, Button, CircularProgress, Grid } from '@mui/material';
 import SearchBox from '../../components/SearchBox';
+import PokemonCard from '../../components/PokemonCard';
 
 const GET_POKEMONS = gql`
   query samplePokeAPIquery($offset: Int!, $search: String) {
@@ -38,8 +37,7 @@ const Home = () => {
     variables: { offset: 0, search }
   });
   const [pokemons, setPokemons] = React.useState<any[]>([]);
-  const [page, setPage] = React.useState(0);
-  const getSprite = (sprites: any) => JSON.parse(sprites?.nodes[0]?.sprites)?.other?.home?.front_default;
+  const [page, setPage] = React.useState(0);  
 
   React.useEffect(() => {
     if (data) {
@@ -85,28 +83,9 @@ const Home = () => {
           <CircularProgress /> 
         </Grid>
       </>}
-      {!loading && pokemons.length > 0 && pokemons.map(({ order, name, pokemon_v2_pokemonsprites_aggregate: sprites, pokemon_v2_pokemontypes: types }: any) =>
-      <Grid item xs={6} md={3} key={name}>
-        <Card sx={{ padding: '5px' }}>
-          <CardMedia
-            component="img"
-            height="140"
-            image={getSprite(sprites)}
-            alt={name}
-            sx={{ objectFit: 'fill' }}
-          />
-          <CardContent>
-            <Typography>
-              N° {(order + '').padStart(3, '0')}
-            </Typography>
-            <Typography gutterBottom variant="h6" component="div">
-              {name?.charAt(0).toUpperCase() + name?.slice(1)}
-            </Typography>
-            <Box sx={{ display: 'flex' }}>
-              { types.map(({ pokemon_v2_type: type }: any) => <TypeTag type={type.name} key={name + type.name} />) }
-            </Box>
-          </CardContent>
-        </Card>
+      {!loading && pokemons.length > 0 && pokemons.map((item) =>
+      <Grid item xs={6} md={3} key={item.name}>
+        <PokemonCard item={item} />
       </Grid>)}
       <Grid item xs={12} md={12} sx={{ textAlign: 'center' }}>
         {!loading && pokemons.length > 0 && <Button 

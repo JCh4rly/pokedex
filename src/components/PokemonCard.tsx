@@ -36,7 +36,7 @@ const PokemonCard = ({ item }: PokemonCardProps) => {
         <Typography>
           N° {(order + '').padStart(3, '0')}
         </Typography>
-        <Typography gutterBottom variant="h6" component="div">
+        <Typography gutterBottom variant="h6" noWrap component="div">
           {name?.charAt(0).toUpperCase() + name?.slice(1)}
         </Typography>
         <Box sx={{ display: 'flex' }}>

@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setCurrentItem } from "../pages/detail/detailSlice";
+import { setCurrentItem } from "../slice/detailSlice";
 import { getSprite } from "../util/Util";
 import TypeTag from "./TypeTag";
 

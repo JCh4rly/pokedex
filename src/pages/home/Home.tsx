@@ -4,7 +4,7 @@ import { Alert, Button, CircularProgress, Grid } from '@mui/material';
 import SearchBox from '../../components/SearchBox';
 import PokemonCard from '../../components/PokemonCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPage, setPokemons, setSortingOption, setVariables } from './homeSlice';
+import { setPage, setPokemons, setSortingOption, setVariables } from '../../slice/homeSlice';
 import SortBox from '../../components/SortBox';
 
 const GET_POKEMONS = gql`

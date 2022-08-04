@@ -9,6 +9,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - Sort results by order and name (asc and desc)
 - Simple pagination
 - Detail page for displaying more info on selected character
+- List of trainers in Detail page
 - Character evolutions 
 
 ## Tech stack

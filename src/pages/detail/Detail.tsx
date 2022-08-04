@@ -2,6 +2,7 @@ import { Alert, Box, Button, Card, CardMedia, Grid, Typography } from "@mui/mate
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Evolutions from "../../components/Evolutions";
+import TrainersPerPokemon from "../../components/TrainersPerPokemon";
 import TypeTag from "../../components/TypeTag";
 import { getHomeSprite } from "../../util/Util";
 
@@ -51,7 +52,7 @@ const Detail = () => {
             component="img"
             height="350"
             image={spriteUrl}
-            sx={{ objectFit: 'fill', p: 2 }}
+            sx={{ objectFit: 'contain', p: 2 }}
             alt={name}
           />
         </Card>
@@ -100,6 +101,14 @@ const Detail = () => {
             Evolutions
           </Typography>
           <Evolutions specy={specy} />
+        </Card>
+      </Grid>
+      <Grid item xs={12} md={12}>
+        <Card sx={{ p: 2 }}>
+          <Typography gutterBottom variant="h5" component="div">
+            Trainers
+          </Typography>
+          <TrainersPerPokemon order={Number(order)} />
         </Card>
       </Grid>
     </Grid>

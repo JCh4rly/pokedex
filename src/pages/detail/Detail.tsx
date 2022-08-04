@@ -48,13 +48,20 @@ const Detail = () => {
       </Grid>
       <Grid item xs={12} md={6}>
         <Card>
-          <CardMedia
+          {!spriteUrl && 
+            <Typography 
+              variant="h6" 
+              sx={{ textAlign: 'center' }}
+            >
+              Not Available
+            </Typography>}
+          {spriteUrl && <CardMedia
             component="img"
             height="350"
             image={spriteUrl}
             sx={{ objectFit: 'contain', p: 2 }}
             alt={name}
-          />
+          />}
         </Card>
       </Grid>
       <Grid item xs={12} md={6}>

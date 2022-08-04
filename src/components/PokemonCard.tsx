@@ -21,9 +21,14 @@ const PokemonCard = ({ item }: PokemonCardProps) => {
 
   return <>
     <Card sx={{ padding: '5px' }}>
-      {!spriteUrl && <Typography variant="h6" sx={{ height: 140, textAlign: 'center' }}>
-        Not Available
-      </Typography>}
+      {!spriteUrl && 
+        <Typography 
+          variant="h6" 
+          sx={{ height: 140, textAlign: 'center', cursor: 'pointer' }}
+          onClick={onClick}
+        >
+          Not Available
+        </Typography>}
       {spriteUrl && <CardMedia
         component="img"
         height="140"

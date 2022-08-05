@@ -91,11 +91,17 @@ const Home = () => {
     dispatch(setVariables({ offset: rowsPerpage * (page + 1) }));
   };
   const handleSearch = (value: string) => {
+    if (value === search) {
+      return;
+    }
+
+    dispatch(setPokemons([]));
     dispatch(setPage(0));
     dispatch(setVariables({ offset: 0, search: value }));
   };
   const handleSort = (value: string) => {
     const sortingValue = sortingConfig[value] || sortingConfig['order_asc'];
+    dispatch(setPokemons([]));
     dispatch(setSortingOption(value));
     dispatch(setPage(0));
     dispatch(setVariables({ offset: 0, sorting: sortingValue }));
@@ -120,9 +126,9 @@ const Home = () => {
         </Grid>
       </>}
       {pokemons.map((item: any) =>
-      <Grid item xs={6} md={3} key={item.name}>
-        <PokemonCard item={item} />
-      </Grid>)}
+        <Grid item xs={6} md={3} key={item.name}>
+          <PokemonCard item={item} />
+        </Grid>)}
       {loading && <>
         <Grid item xs={12} md={12} sx={{ textAlign: 'center' }}>
           <CircularProgress /> 

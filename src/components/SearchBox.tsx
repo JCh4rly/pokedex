@@ -8,6 +8,7 @@ interface SearchBoxProps {
 
 const SearchBox = ({ search, onSearch }: SearchBoxProps) => {
   const [value, setValue] = React.useState(search);
+  const searchEmpty = !value;
   const onClear = () => {
     setValue("");
     onSearch("");
@@ -40,6 +41,7 @@ const SearchBox = ({ search, onSearch }: SearchBoxProps) => {
         variant="contained"
         onClick={onClear}
         sx={{ marginLeft: 1 }}
+        disabled={searchEmpty}
       >
         Clear
       </Button>  
@@ -47,6 +49,7 @@ const SearchBox = ({ search, onSearch }: SearchBoxProps) => {
         variant="contained"
         onClick={() => onSearch(value)}
         sx={{ marginLeft: 1 }}
+        disabled={searchEmpty}
       >
         Search
       </Button>

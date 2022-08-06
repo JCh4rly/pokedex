@@ -8,8 +8,8 @@ import { setPage, setPokemons, setSortingOption, setVariables } from '../../slic
 import SortBox from '../../components/SortBox';
 
 const GET_POKEMONS = gql`
-  query samplePokeAPIquery($offset: Int!, $search: String, $sorting: [pokemon_v2_pokemon_order_by!]) {
-    pokemon_v2_pokemon(limit: 12, offset: $offset, where: {name: {_iregex: $search}, order: {_gte: 1, _lte: 779}}, order_by: $sorting) {
+  query samplePokeAPIquery($offset: Int!, $limit: Int!, $search: String, $sorting: [pokemon_v2_pokemon_order_by!]) {
+    pokemon_v2_pokemon(limit: $limit, offset: $offset, where: {name: {_iregex: $search}, order: {_gte: 1, _lte: 779}}, order_by: $sorting) {
       name
       height
       weight
@@ -46,12 +46,11 @@ const GET_POKEMONS = gql`
 `;
 
 const Home = () => {
-  const rowsPerpage = 12;
   const pokemons = useSelector((state: any) => state.home.pokemons);
   const variables = useSelector((state: any) => state.home.variables);
   const sortingOption = useSelector((state: any) => state.home.sortingOption);
   const page = useSelector((state: any) => state.home.page);
-  const { search } = variables;
+  const { search, limit } = variables;
   const dispatch = useDispatch();
   const [getPokemons, { loading, error, data }] = useLazyQuery(GET_POKEMONS, {
     notifyOnNetworkStatusChange: true,
@@ -88,7 +87,7 @@ const Home = () => {
 
   const loadMoreItems = () => {
     dispatch(setPage(page + 1));
-    dispatch(setVariables({ offset: rowsPerpage * (page + 1) }));
+    dispatch(setVariables({ offset: limit * (page + 1) }));
   };
   const handleSearch = (value: string) => {
     if (value === search) {

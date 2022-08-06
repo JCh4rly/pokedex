@@ -5,6 +5,7 @@ export const homeSlice = createSlice({
   initialState: {
     variables: {
       offset: 0,
+      limit: 12,
       sorting: { order: 'asc' },
       search: "",
     },
@@ -22,9 +23,6 @@ export const homeSlice = createSlice({
     setPage: (state, action) => {
       state.page = action.payload
     },
-    // setSearch: (state, action) => {
-    //   state.search = action.payload
-    // },
     setPokemons: (state, action) => {
       state.pokemons = action.payload
     },

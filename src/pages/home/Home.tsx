@@ -6,6 +6,7 @@ import PokemonCard from '../../components/PokemonCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMoreData, setPage, setPokemons, setSortingOption, setVariables } from '../../slice/homeSlice';
 import SortBox from '../../components/SortBox';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const GET_POKEMONS = gql`
   query samplePokeAPIquery($offset: Int!, $limit: Int!, $search: String, $sorting: [pokemon_v2_pokemon_order_by!]) {
@@ -126,23 +127,29 @@ const Home = () => {
           <Alert severity="info">No Pokemons found!!</Alert>
         </Grid>
       </>}
-      {pokemons.map((item: any) =>
-        <Grid item xs={6} md={3} key={item.name}>
-          <PokemonCard item={item} />
-        </Grid>)}
+
+      <Grid item xs={12} md={12}>    
+        <InfiniteScroll
+          dataLength={pokemons.length}
+          next={loadMoreItems}
+          hasMore={moreData}
+          loader={null}
+          scrollThreshold={0.9}
+        >
+          <Grid container spacing={1}>
+            {pokemons.map((item: any) =>
+              <Grid item xs={6} md={3} key={item.name}>
+                <PokemonCard item={item} />
+              </Grid>)}
+          </Grid>
+        </InfiniteScroll>
+      </Grid>
+
       {loading && <>
         <Grid item xs={12} md={12} sx={{ textAlign: 'center' }}>
           <CircularProgress /> 
         </Grid>
       </>}
-      <Grid item xs={12} md={12} sx={{ textAlign: 'center' }}>
-        {!loading && moreData && <Button 
-          variant="contained" 
-          onClick={loadMoreItems}
-        >
-          Load more Pokemons
-        </Button>}
-      </Grid>
     </Grid>
   </>;
 }

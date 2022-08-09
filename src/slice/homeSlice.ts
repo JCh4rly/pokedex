@@ -5,7 +5,7 @@ export const homeSlice = createSlice({
   initialState: {
     variables: {
       offset: 0,
-      limit: 12,
+      limit: 20,
       sorting: { order: 'asc' },
       search: "",
     },

@@ -10,10 +10,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - Simple pagination
 - Detail page for displaying more info on selected character
 - List of trainers in Detail page
-- Character evolutions 
+- Character evolutions
+- Infinite scrolling 
 
-## Tech stack
+## Tech stack and external libraries
 - ReactJs with Typescript
 - React-router for routing management
 - React-redux for state management
 - MUI as component library
+- react-infinite-scroll-component for scrolling

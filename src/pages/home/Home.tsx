@@ -4,7 +4,7 @@ import { Alert, Button, CircularProgress, Grid } from '@mui/material';
 import SearchBox from '../../components/SearchBox';
 import PokemonCard from '../../components/PokemonCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPage, setPokemons, setSortingOption, setVariables } from '../../slice/homeSlice';
+import { setMoreData, setPage, setPokemons, setSortingOption, setVariables } from '../../slice/homeSlice';
 import SortBox from '../../components/SortBox';
 
 const GET_POKEMONS = gql`
@@ -50,6 +50,7 @@ const Home = () => {
   const variables = useSelector((state: any) => state.home.variables);
   const sortingOption = useSelector((state: any) => state.home.sortingOption);
   const page = useSelector((state: any) => state.home.page);
+  const moreData = useSelector((state: any) => state.home.moreData);
   const { search, limit } = variables;
   const dispatch = useDispatch();
   const [getPokemons, { loading, error, data }] = useLazyQuery(GET_POKEMONS, {
@@ -68,6 +69,7 @@ const Home = () => {
       dispatch(setPokemons(page === 0 
         ? data.pokemon_v2_pokemon 
         : [...pokemons, ...data.pokemon_v2_pokemon]));
+      dispatch(setMoreData(data.pokemon_v2_pokemon.length === limit));  
     }
   }, [data])
 
@@ -134,7 +136,7 @@ const Home = () => {
         </Grid>
       </>}
       <Grid item xs={12} md={12} sx={{ textAlign: 'center' }}>
-        {!loading && pokemons.length > 0 && <Button 
+        {!loading && moreData && <Button 
           variant="contained" 
           onClick={loadMoreItems}
         >

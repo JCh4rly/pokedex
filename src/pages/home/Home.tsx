@@ -4,9 +4,10 @@ import { Alert, Button, CircularProgress, Grid } from '@mui/material';
 import SearchBox from '../../components/SearchBox';
 import PokemonCard from '../../components/PokemonCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { setMoreData, setPage, setPokemons, setSortingOption, setVariables } from '../../slice/homeSlice';
+import { setMoreData, setPage, setPokemons, setSortingOption, setVariables, toggleAdvancedOptions } from '../../slice/homeSlice';
 import SortBox from '../../components/SortBox';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import Slot from '../../components/Slot';
 
 const GET_POKEMONS = gql`
   query samplePokeAPIquery($offset: Int!, $limit: Int!, $search: String, $sorting: [pokemon_v2_pokemon_order_by!]) {
@@ -52,6 +53,7 @@ const Home = () => {
   const sortingOption = useSelector((state: any) => state.home.sortingOption);
   const page = useSelector((state: any) => state.home.page);
   const moreData = useSelector((state: any) => state.home.moreData);
+  const advancedOpen = useSelector((state: any) => state.home.advancedOpen);
   const { search, limit } = variables;
   const dispatch = useDispatch();
   const [getPokemons, { loading, error, data }] = useLazyQuery(GET_POKEMONS, {
@@ -108,6 +110,7 @@ const Home = () => {
     dispatch(setPage(0));
     dispatch(setVariables({ offset: 0, sorting: sortingValue }));
   }
+  const handleToggleAdvanced = () => dispatch(toggleAdvancedOptions());
 
   if (error) {
     return <p>Error: {error.message}</p>
@@ -115,12 +118,16 @@ const Home = () => {
   
   return <>
     <Grid container spacing={1}>
-      <Grid item xs={12} md={12} sx={{ textAlign: 'center' }}>
+      <Slot>
         <SearchBox search={search} onSearch={handleSearch} />
-      </Grid>
-      <Grid item xs={12} md={12} sx={{ textAlign: 'center' }}>
+      </Slot>
+      <Slot>
         <SortBox value={sortingOption} onChange={handleSort} />
-      </Grid>
+      </Slot>
+      <Slot>
+        {advancedOpen && <div>Advanced Panel</div>}
+        <Button onClick={handleToggleAdvanced}>{(advancedOpen ? 'Close' : 'Open') + ' advanced options'}</Button>
+      </Slot>
 
       {!loading && data?.pokemon_v2_pokemon?.length === 0 && pokemons.length === 0 && <>
         <Grid item xs={12} md={12}>

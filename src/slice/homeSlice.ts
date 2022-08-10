@@ -13,6 +13,7 @@ export const homeSlice = createSlice({
     page: 0,
     pokemons: [],
     moreData: false,
+    advancedOpen: false,
   },
   reducers: {
     setVariables: (state, action) => {
@@ -29,11 +30,14 @@ export const homeSlice = createSlice({
     },
     setMoreData: (state, action) => {
       state.moreData = action.payload
+    },
+    toggleAdvancedOptions: (state) => {
+      state.advancedOpen = !state.advancedOpen
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setVariables, setPage, setSortingOption, setPokemons, setMoreData } = homeSlice.actions
+export const { setVariables, setPage, setSortingOption, setPokemons, setMoreData, toggleAdvancedOptions } = homeSlice.actions
 
 export default homeSlice.reducer

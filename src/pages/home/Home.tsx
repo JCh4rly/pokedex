@@ -8,6 +8,8 @@ import { setMoreData, setPage, setPokemons, setSortingOption, setVariables, togg
 import SortBox from '../../components/SortBox';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Slot from '../../components/Slot';
+import AdvancedFilterBox from '../../components/AdvancedFilterBox';
+import { Box } from '@mui/system';
 
 const GET_POKEMONS = gql`
   query samplePokeAPIquery($offset: Int!, $limit: Int!, $search: String, $sorting: [pokemon_v2_pokemon_order_by!]) {
@@ -125,8 +127,10 @@ const Home = () => {
         <SortBox value={sortingOption} onChange={handleSort} />
       </Slot>
       <Slot>
-        {advancedOpen && <div>Advanced Panel</div>}
-        <Button onClick={handleToggleAdvanced}>{(advancedOpen ? 'Close' : 'Open') + ' advanced options'}</Button>
+        <Box>
+          {advancedOpen && <AdvancedFilterBox/>}
+          <Button onClick={handleToggleAdvanced}>{(advancedOpen ? 'Close' : 'Open') + ' advanced options'}</Button>
+        </Box>
       </Slot>
 
       {!loading && data?.pokemon_v2_pokemon?.length === 0 && pokemons.length === 0 && <>
